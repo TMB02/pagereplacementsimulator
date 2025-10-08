@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Replacement Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div class="hero__content">
+                <h1>Page Replacement Algorithm Simulator</h1>
+                <p class="hero__tagline">Experiment with FIFO, LRU, and Optimal strategies in an interactive, visualization-driven playground. Tune the reference string, tweak frame counts, and instantly compare hit ratios.</p>
+            </div>
+            <div class="hero__cta">
+                <button id="runButton" class="btn btn--primary">Run Simulation</button>
+                <button id="clearButton" class="btn btn--ghost">Clear</button>
+            </div>
+        </header>
+
+        <main class="layout">
+            <section class="panel panel--controls">
+                <h2>Simulation Parameters</h2>
+                <form id="controlForm" class="controls">
+                    <label class="field">
+                        <span>Reference String</span>
+                        <textarea id="referenceString" rows="3" placeholder="e.g. 7,0,1,2,0,3,0,4,2,3,0,3,2" required></textarea>
+                        <small>Separate pages with commas or spaces. Negative numbers are not allowed.</small>
+                    </label>
+                    <div class="field-grid">
+                        <label class="field">
+                            <span>Number of Frames</span>
+                            <input id="frameCount" type="number" min="1" max="25" value="3" required>
+                        </label>
+                        <label class="field">
+                            <span>Algorithm</span>
+                            <select id="algorithm">
+                                <option value="all">All Algorithms</option>
+                                <option value="fifo">FIFO Only</option>
+                                <option value="lru">LRU Only</option>
+                                <option value="optimal">Optimal Only</option>
+                            </select>
+                        </label>
+                    </div>
+                </form>
+
+                <div class="examples">
+                    <h3>Try an example</h3>
+                    <div class="chip-group">
+                        <button class="chip" data-example="7,0,1,2,0,3,0,4,2,3,0,3,2" data-frames="3">Classic Thrash</button>
+                        <button class="chip" data-example="1,2,3,4,1,2,5,1,2,3,4,5" data-frames="4">Working Set</button>
+                        <button class="chip" data-example="1,2,3,4,5,1,2,3,4,5" data-frames="3">Sequential Sweep</button>
+                        <button class="chip" data-example="4 2 1 3 4 2 5 1 2 4 5" data-frames="4">Mixed Access</button>
+                    </div>
+                </div>
+
+                <div id="status" role="alert" aria-live="polite"></div>
+            </section>
+
+            <section class="panel panel--results">
+                <div class="summary">
+                    <h2>At a glance</h2>
+                    <div id="summaryCards" class="summary__grid"></div>
+                </div>
+
+                <div class="comparison">
+                    <div class="comparison__header">
+                        <h2>Algorithm Comparison</h2>
+                        <div class="comparison__meta">
+                            <span id="totalReferences">0 references</span>
+                            <span id="frameSummary">0 frames</span>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Algorithm</th>
+                                    <th>Page Faults</th>
+                                    <th>Hit Ratio</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparisonBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="details">
+                    <h2>Step-by-step breakdown</h2>
+                    <div id="resultDeck" class="result-deck"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Built by Tejas Badhe, Trinity College of Engineering and Research.</p>
+            <button id="exportButton" class="btn btn--subtle">Download Results</button>
+        </footer>
+    </div>
+
+    <template id="resultTemplate">
+        <article class="result-card">
+            <header class="result-card__header">
+                <div>
+                    <h3></h3>
+                    <p class="result-card__subtitle"></p>
+                </div>
+                <span class="badge"></span>
+            </header>
+            <div class="result-card__stats"></div>
+            <details class="result-card__details" open>
+                <summary>Show detailed timeline</summary>
+                <div class="table-wrapper">
+                    <table class="steps-table">
+                        <thead>
+                            <tr>
+                                <th>Ref</th>
+                                <th>Frames</th>
+                                <th>Fault?</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </details>
+        </article>
+    </template>
+
+    <script src="app.js" type="module"></script>
+</body>
+</html>
